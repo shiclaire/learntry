@@ -1,0 +1,36 @@
+- hosts: localhost
+  connection: local
+  become: false # Don't use sudo for this part
+  vars:
+    region: us-west-2 #ap-southeast-2
+  tasks:
+    - name: Gathering all of our tagged instances
+      ec2_instance_facts:
+        region: "{{ region }}"
+        filters:
+          "tag:type": clientsites
+      register: ec2
+    - debug: var=ec2
+
+#    - name: Download our URL checking script
+#      get_url:
+#        url=https://raw.githubusercontent.com/mitchelljdavies/2018_Group_1/master/checkurl.sh
+#        dest=/var/www/html/
+
+    - name: Make sure it's executable
+      file:
+        path: /var/www/html/checkurl.sh
+        owner: ec2-user
+        group: apache
+        mode: 0777
+
+#    - name: Download our email sender playbook
+#      get_url:
+#        url=https://raw.githubusercontent.com/mitchelljdavies/2018_Group_1/master/email.yml
+#        dest=/var/www/html/
+
+    - name: Checking instance's homepage URL and it's links to confirm it is live...
+      command: /var/www/html/./checkurl.sh "{{ item.public_ip_address }}"
+      with_items: "{{ ec2.instances }}"
+      register: checkurl
+    - debug: var=checkurl

@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  connection: local
+  become: false
+  tasks:
+    - name: Send an email
+      mail:
+        host: localhost
+        port: 25
+        to: "Web Master <{{ lookup('env', 'webmasterEmail') }}>"
+        subject: EC2 instance {{ lookup('env', 'problemIP') }} returned an error {{ lookup('env', 'problemError') }}
+        body: Hello, your EC2 instance with IP address "{{ lookup('env', 'problemIP') }}" returned a {{ lookup('env', 'problemError') }} error. Please investigate.
