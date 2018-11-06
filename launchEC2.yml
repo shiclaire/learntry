@@ -5,7 +5,7 @@
   become: false # Don't use sudo for this part
   gather_facts: False
   vars:
-    key_name: 383projecta2 # This is the name of the key we set up in the instructions for task 1 & 2.
+    key_name: newkey # This is the name of the key we set up in the instructions for task 1 & 2.
     instance_type: t2.micro
     security_group: my-new-security-group
     image: ami-6cd6f714
